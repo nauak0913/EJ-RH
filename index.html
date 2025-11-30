@@ -1,744 +1,329 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EducaJovem</title>
-    <style>
-        :root {
-            --preto: #121212;
-            --branco: #ffffff;
-            --cinza-claro: #f5f5f5;
-            --cinza-medio: #e0e0e0;
-            --cinza-escuro: #424242;
-            --verde-escuro: #1b5e20;
-            --verde-hover: #2e7d32;
-            --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+<meta charset="UTF-8">
+<title>EducaJovem</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+<style>
+/* -------------------- CORES -------------------- */
+:root {
+    --preto: #000;
+    --cinza: #1e1e1e;
+    --cinza-claro: #2e2e2e;
+    --branco: #fff;
+    --verde: #0b3d2e;
+}
 
-        body {
-            background-color: var(--cinza-claro);
-            color: var(--preto);
-            transition: margin-left 0.3s;
-        }
+/* -------------------- ESTILO GERAL -------------------- */
+body {
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--cinza);
+    color: var(--branco);
+    overflow-x:hidden;
+}
 
-        /* Menu Hamburger */
-        .menu-toggle {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-            background-color: var(--verde-escuro);
-            color: var(--branco);
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: var(--sombra);
-            transition: all 0.3s;
-        }
+h1, h2, h3 {
+    color: var(--branco);
+}
 
-        .menu-toggle:hover {
-            background-color: var(--verde-hover);
-            transform: scale(1.05);
-        }
+/* -------------------- TELA CENTRAL -------------------- */
+.screen {
+    display:none;
+    padding:40px;
+}
 
-        .menu-toggle span {
-            display: block;
-            width: 25px;
-            height: 3px;
-            background-color: var(--branco);
-            margin: 4px 0;
-            transition: 0.3s;
-        }
+.active {
+    display:block;
+}
 
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: 300px;
-            height: 100%;
-            background-color: var(--preto);
-            color: var(--branco);
-            padding: 20px;
-            transition: left 0.3s;
-            z-index: 999;
-            overflow-y: auto;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-        }
+/* -------------------- BOTÕES PRINCIPAIS -------------------- */
+.main-button {
+    padding:20px 30px;
+    margin:20px;
+    font-size:22px;
+    background:var(--verde);
+    border:none;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.3s;
+}
+.main-button:hover {
+    background:#0f523d;
+}
 
-        .sidebar.active {
-            left: 0;
-        }
+/* -------------------- MENU LATERAL -------------------- */
+#sidebar {
+    width:250px;
+    height:100%;
+    background:var(--cinza-claro);
+    position:fixed;
+    top:0;
+    left:-260px;
+    padding-top:60px;
+    transition:0.3s;
+    z-index:1000;
+}
+#sidebar.open {
+    left:0;
+}
 
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--cinza-escuro);
-        }
+#sidebar button {
+    width:100%;
+    padding:15px;
+    background:none;
+    border:none;
+    text-align:left;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+    border-bottom:1px solid #444;
+}
+#sidebar button:hover {
+    background:var(--verde);
+}
 
-        .sidebar-header h2 {
-            color: var(--branco);
-        }
+/* -------------------- BOTÃO HAMBURGER -------------------- */
+#hamburgerBtn {
+    position:fixed;
+    top:20px;
+    left:20px;
+    z-index:1100;
+    font-size:30px;
+    background:var(--verde);
+    color:white;
+    border:none;
+    border-radius:50%;
+    padding:10px 15px;
+    cursor:pointer;
+    transition:0.3s;
+}
+#hamburgerBtn:hover {
+    background:#0f523d;
+}
 
-        .close-btn {
-            background: none;
-            border: none;
-            color: var(--branco);
-            font-size: 24px;
-            cursor: pointer;
-        }
+/* -------------------- CARDS & CAIXAS -------------------- */
+.card {
+    background:#222;
+    padding:20px;
+    margin:15px 0;
+    border-radius:10px;
+}
 
-        .sidebar-menu {
-            list-style: none;
-        }
+input, select {
+    padding:10px;
+    width:100%;
+    margin-top:10px;
+    background:#333;
+    border:1px solid #555;
+    color:white;
+    border-radius:6px;
+}
 
-        .sidebar-menu li {
-            margin-bottom: 10px;
-        }
+.result-card {
+    background:#333;
+    padding:15px;
+    margin:10px 0;
+    border-radius:8px;
+}
 
-        .sidebar-menu a {
-            display: block;
-            padding: 12px 15px;
-            color: var(--branco);
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
+button.secondary {
+    padding:8px 15px;
+    background:var(--verde);
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    margin-top:10px;
+}
+button.secondary:hover {
+    background:#0f523d;
+}
+</style>
 
-        .sidebar-menu a:hover {
-            background-color: var(--cinza-escuro);
-        }
-
-        .sidebar-menu .active {
-            background-color: var(--verde-escuro);
-        }
-
-        /* Overlay para fechar menu ao clicar fora */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 998;
-            display: none;
-        }
-
-        .overlay.active {
-            display: block;
-        }
-
-        /* Conteúdo principal */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .page {
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Tela inicial */
-        .home-screen {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 80vh;
-            text-align: center;
-        }
-
-        .home-screen h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: var(--verde-escuro);
-        }
-
-        .home-screen p {
-            font-size: 1.2rem;
-            margin-bottom: 40px;
-            max-width: 600px;
-            color: var(--cinza-escuro);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 15px 30px;
-            background-color: var(--verde-escuro);
-            color: var(--branco);
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: var(--sombra);
-        }
-
-        .btn:hover {
-            background-color: var(--verde-hover);
-            transform: translateY(-3px);
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            border: 2px solid var(--verde-escuro);
-            color: var(--verde-escuro);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--verde-escuro);
-            color: var(--branco);
-        }
-
-        /* Páginas de conteúdo */
-        .page-header {
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--cinza-medio);
-        }
-
-        .page-header h2 {
-            color: var(--verde-escuro);
-            font-size: 2.2rem;
-        }
-
-        .card {
-            background-color: var(--branco);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--sombra);
-        }
-
-        .card h3 {
-            color: var(--verde-escuro);
-            margin-bottom: 15px;
-        }
-
-        .card p {
-            line-height: 1.6;
-            color: var(--cinza-escuro);
-        }
-
-        /* Funcionalidades */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .feature-card {
-            background-color: var(--branco);
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: var(--sombra);
-            transition: transform 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-card h4 {
-            color: var(--verde-escuro);
-            margin-bottom: 10px;
-        }
-
-        /* Busca e Contratação */
-        .search-section {
-            margin-bottom: 30px;
-        }
-
-        .search-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .search-bar input, .search-bar select {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid var(--cinza-medio);
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-
-        .search-bar button {
-            padding: 12px 20px;
-            background-color: var(--verde-escuro);
-            color: var(--branco);
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .candidates-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .candidate-card {
-            background-color: var(--branco);
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: var(--sombra);
-            text-align: center;
-        }
-
-        .candidate-card img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
-        }
-
-        .candidate-card h4 {
-            margin-bottom: 5px;
-            color: var(--preto);
-        }
-
-        .candidate-card p {
-            color: var(--cinza-escuro);
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-        }
-
-        .candidate-card .btn {
-            padding: 8px 15px;
-            font-size: 0.9rem;
-            margin: 5px;
-        }
-
-        /* EJ RHAI */
-        .rhai-section {
-            margin-bottom: 30px;
-        }
-
-        .rhai-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .rhai-feature {
-            background-color: var(--branco);
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: var(--sombra);
-        }
-
-        .rhai-feature h4 {
-            color: var(--verde-escuro);
-            margin-bottom: 10px;
-        }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 250px;
-            }
-
-            .home-screen h1 {
-                font-size: 2.2rem;
-            }
-
-            .btn-group {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .btn {
-                width: 100%;
-                max-width: 300px;
-            }
-
-            .search-bar {
-                flex-direction: column;
-            }
-        }
-    </style>
 </head>
 <body>
-    <!-- Menu Hamburger -->
-    <button class="menu-toggle" id="menuToggle">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
 
-    <!-- Menu Lateral -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>EducaJovem</h2>
-            <button class="close-btn" id="closeMenu">&times;</button>
-        </div>
-        <ul class="sidebar-menu" id="sidebarMenu">
-            <!-- Menu para Empresa -->
-            <li class="empresa-menu" style="display: none;">
-                <a href="#" data-page="empresa-inicio">Início</a>
-                <a href="#" data-page="busca-contratacao">Busca e Contratação</a>
-                <a href="#" data-page="ej-rhai">EJ RHAI</a>
-            </li>
-            <!-- Menu para Aluno -->
-            <li class="aluno-menu" style="display: none;">
-                <a href="#" data-page="aluno-inicio">Início Aluno</a>
-                <a href="#" data-page="aluno-perfil">Meu Perfil</a>
-                <a href="#" data-page="aluno-vagas">Vagas Disponíveis</a>
-            </li>
+<!-- -----------------------------------------------------------
+                        BOTÃO HAMBURGER
+----------------------------------------------------------- -->
+<button id="hamburgerBtn" onclick="toggleMenu()">☰</button>
+
+<!-- -----------------------------------------------------------
+                        MENU LATERAL
+----------------------------------------------------------- -->
+<div id="sidebar">
+    <button onclick="openScreen('empresaHome')">🏠 Início</button>
+    <button onclick="openScreen('buscaContratacao')">🔎 Busca & Contratação</button>
+    <button onclick="openScreen('ejrhai')">🤖 EJ RHAI</button>
+</div>
+
+<!-- -----------------------------------------------------------
+                        TELA INICIAL (ESCOLHA)
+----------------------------------------------------------- -->
+<div id="home" class="screen active">
+    <h1>Bem-vindo ao EducaJovem 🚀</h1>
+    <h2>Selecione seu tipo de acesso:</h2>
+
+    <button class="main-button" onclick="openScreen('empresaHome')">Sou Empresa</button>
+    <button class="main-button" onclick="alert('Área de alunos ainda será construída.')">Sou Aluno/Adulto</button>
+</div>
+
+<!-- -----------------------------------------------------------
+                        EMPRESA - HOME
+----------------------------------------------------------- -->
+<div id="empresaHome" class="screen">
+    <h1>Área da Empresa</h1>
+
+    <div class="card">
+        <h2>Sobre a Plataforma</h2>
+        <p>Aqui você encontra jovens talentos, filtros avançados, análise de desempenho e automações via IA para facilitar processos de RH e contratações.</p>
+    </div>
+
+    <div class="card">
+        <h2>Funcionalidades</h2>
+        <ul>
+            <li>Busca completa de funcionários</li>
+            <li>Contratação facilitada</li>
+            <li>Análises de desempenho semestrais</li>
+            <li>Automação via IA para RH</li>
+            <li>Análise de dados & calculadora inteligente</li>
         </ul>
     </div>
+</div>
 
-    <!-- Overlay para fechar menu -->
-    <div class="overlay" id="overlay"></div>
+<!-- -----------------------------------------------------------
+                BUSCA E CONTRATAÇÃO (funcional)
+----------------------------------------------------------- -->
+<div id="buscaContratacao" class="screen">
+    <h1>Busca e Contratação</h1>
 
-    <!-- Conteúdo Principal -->
-    <div class="container">
-        <!-- Tela Inicial -->
-        <div class="page active" id="home">
-            <div class="home-screen">
-                <h1>EducaJovem</h1>
-                <p>Conectando jovens talentos às melhores oportunidades</p>
-                <div class="btn-group">
-                    <button class="btn" id="btnAluno">Área do Aluno</button>
-                    <button class="btn" id="btnEmpresa">Área da Empresa</button>
-                </div>
-            </div>
-        </div>
+    <div class="card">
+        <h2>Filtros de busca</h2>
 
-        <!-- Páginas da Empresa -->
-        <div class="page" id="empresa-inicio">
-            <div class="page-header">
-                <h2>Bem-vindo à Área da Empresa</h2>
-            </div>
-            <div class="card">
-                <h3>Funcionalidades</h3>
-                <p>Na área da empresa, você terá acesso a diversas ferramentas para encontrar e contratar os melhores talentos jovens.</p>
-            </div>
-            <div class="card">
-                <h3>Objetivo</h3>
-                <p>Nosso objetivo é conectar empresas a jovens talentos de forma eficiente, proporcionando um match perfeito entre habilidades e necessidades.</p>
-            </div>
-            <div class="card">
-                <h3>Valores</h3>
-                <p>Transparência, eficiência e compromisso com o desenvolvimento profissional dos jovens são nossos principais valores.</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h4>Busca Avançada</h4>
-                    <p>Encontre candidatos por habilidades, localização, experiência e muito mais.</p>
-                </div>
-                <div class="feature-card">
-                    <h4>Perfis Detalhados</h4>
-                    <p>Acesse perfis completos com informações acadêmicas, habilidades e experiências.</p>
-                </div>
-                <div class="feature-card">
-                    <h4>EJ RHAI</h4>
-                    <p>Nossa inteligência artificial ajuda a encontrar os candidatos ideais para sua vaga.</p>
-                </div>
-            </div>
-        </div>
+        <input id="idade" placeholder="Idade desejada">
+        <input id="area" placeholder="Área / Especialização">
+        <input id="cidade" placeholder="Cidade">
+        <input id="escola" placeholder="Escola">
 
-        <div class="page" id="busca-contratacao">
-            <div class="page-header">
-                <h2>Busca e Contratação</h2>
-            </div>
-            <div class="search-section">
-                <div class="search-bar">
-                    <input type="text" placeholder="Buscar por nome, habilidades...">
-                    <select>
-                        <option value="">Todas as áreas</option>
-                        <option value="tecnologia">Tecnologia</option>
-                        <option value="administracao">Administração</option>
-                        <option value="marketing">Marketing</option>
-                        <option value="design">Design</option>
-                    </select>
-                    <select>
-                        <option value="">Todas as idades</option>
-                        <option value="16-18">16-18 anos</option>
-                        <option value="19-21">19-21 anos</option>
-                        <option value="22-24">22-24 anos</option>
-                    </select>
-                    <button>Buscar</button>
-                </div>
-            </div>
-            <div class="candidates-grid">
-                <!-- Candidatos serão carregados aqui via JavaScript -->
-            </div>
-        </div>
-
-        <div class="page" id="ej-rhai">
-            <div class="page-header">
-                <h2>EJ RHAI - Recursos Humanos com IA</h2>
-            </div>
-            <div class="rhai-section">
-                <div class="card">
-                    <h3>Funcionalidades do EJ RHAI</h3>
-                    <p>Nossa plataforma de IA oferece soluções avançadas para otimizar seus processos de RH.</p>
-                </div>
-            </div>
-            <div class="rhai-features">
-                <div class="rhai-feature">
-                    <h4>RH de Contratação Semiautomático</h4>
-                    <p>Nosso agente de IA encontra os 5 melhores candidatos baseados em suas especificações.</p>
-                    <button class="btn" style="margin-top: 10px;">Usar Agora</button>
-                </div>
-                <div class="rhai-feature">
-                    <h4>Analista de Funcionários</h4>
-                    <p>Analise o desempenho de seus funcionários com base em hard e soft skills.</p>
-                    <button class="btn" style="margin-top: 10px;">Usar Agora</button>
-                </div>
-                <div class="rhai-feature">
-                    <h4>Analista de Dados e Calculadora</h4>
-                    <p>Analise dados e use nossa calculadora interativa para qualquer necessidade.</p>
-                    <button class="btn" style="margin-top: 10px;">Usar Agora</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Páginas do Aluno -->
-        <div class="page" id="aluno-inicio">
-            <div class="page-header">
-                <h2>Bem-vindo à Área do Aluno</h2>
-            </div>
-            <div class="card">
-                <h3>Encontre Oportunidades</h3>
-                <p>Explore vagas de emprego, estágios e programas de trainee das melhores empresas.</p>
-            </div>
-            <div class="card">
-                <h3>Desenvolva suas Habilidades</h3>
-                <p>Acesse cursos, materiais e recursos para aprimorar suas competências profissionais.</p>
-            </div>
-            <div class="card">
-                <h3>Construa seu Perfil</h3>
-                <p>Crie um perfil atrativo para se destacar para os recrutadores.</p>
-            </div>
-        </div>
-
-        <div class="page" id="aluno-perfil">
-            <div class="page-header">
-                <h2>Meu Perfil</h2>
-            </div>
-            <div class="card">
-                <h3>Informações Pessoais</h3>
-                <p>Gerencie suas informações pessoais, acadêmicas e profissionais.</p>
-            </div>
-            <div class="card">
-                <h3>Habilidades</h3>
-                <p>Adicione e organize suas habilidades para se destacar.</p>
-            </div>
-            <div class="card">
-                <h3>Experiências</h3>
-                <p>Registre suas experiências profissionais e acadêmicas.</p>
-            </div>
-        </div>
-
-        <div class="page" id="aluno-vagas">
-            <div class="page-header">
-                <h2>Vagas Disponíveis</h2>
-            </div>
-            <div class="card">
-                <h3>Encontre a Vaga Perfeita</h3>
-                <p>Explore oportunidades que combinam com seu perfil e interesses.</p>
-            </div>
-            <!-- Lista de vagas será carregada aqui via JavaScript -->
-        </div>
+        <button class="secondary" onclick="buscarFuncionarios()">Buscar</button>
     </div>
 
-    <script>
-        // Dados de exemplo para candidatos
-        const candidatos = [
-            {
-                id: 1,
-                nome: "Ana Silva",
-                idade: 22,
-                area: "Tecnologia",
-                especializacao: "Desenvolvimento Front-end",
-                escola: "Universidade Federal",
-                cidade: "São Paulo, SP",
-                foto: "https://randomuser.me/api/portraits/women/1.jpg"
-            },
-            {
-                id: 2,
-                nome: "Carlos Oliveira",
-                idade: 20,
-                area: "Marketing",
-                especializacao: "Marketing Digital",
-                escola: "Faculdade de Administração",
-                cidade: "Rio de Janeiro, RJ",
-                foto: "https://randomuser.me/api/portraits/men/2.jpg"
-            },
-            {
-                id: 3,
-                nome: "Mariana Santos",
-                idade: 19,
-                area: "Design",
-                especializacao: "Design Gráfico",
-                escola: "Escola de Design",
-                cidade: "Belo Horizonte, MG",
-                foto: "https://randomuser.me/api/portraits/women/3.jpg"
-            },
-            {
-                id: 4,
-                nome: "Rafael Costa",
-                idade: 21,
-                area: "Tecnologia",
-                especializacao: "Ciência de Dados",
-                escola: "Instituto Tecnológico",
-                cidade: "Porto Alegre, RS",
-                foto: "https://randomuser.me/api/portraits/men/4.jpg"
-            },
-            {
-                id: 5,
-                nome: "Juliana Pereira",
-                idade: 23,
-                area: "Administração",
-                especializacao: "Gestão de Projetos",
-                escola: "Universidade Estadual",
-                cidade: "Curitiba, PR",
-                foto: "https://randomuser.me/api/portraits/women/5.jpg"
-            },
-            {
-                id: 6,
-                nome: "Pedro Almeida",
-                idade: 20,
-                area: "Tecnologia",
-                especializacao: "Desenvolvimento Back-end",
-                escola: "Faculdade de Computação",
-                cidade: "Salvador, BA",
-                foto: "https://randomuser.me/api/portraits/men/6.jpg"
-            }
-        ];
+    <h2>Resultados:</h2>
+    <div id="resultados"></div>
+</div>
 
-        // Elementos DOM
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.getElementById('sidebar');
-        const closeMenu = document.getElementById('closeMenu');
-        const overlay = document.getElementById('overlay');
-        const sidebarMenu = document.getElementById('sidebarMenu');
-        const btnAluno = document.getElementById('btnAluno');
-        const btnEmpresa = document.getElementById('btnEmpresa');
-        const pages = document.querySelectorAll('.page');
-        const empresaMenu = document.querySelector('.empresa-menu');
-        const alunoMenu = document.querySelector('.aluno-menu');
-        const candidatesGrid = document.querySelector('.candidates-grid');
+<!-- -----------------------------------------------------------
+                EJ RHAI - IA SEMIAUTOMÁTICA
+----------------------------------------------------------- -->
+<div id="ejrhai" class="screen">
+    <h1>EJ RHAI — Inteligência Artificial Empresarial</h1>
 
-        // Função para alternar menu
-        function toggleMenu() {
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
+    <div class="card">
+        <h2>RH de Contratação Semi-Automático</h2>
+        <p>Descreva o tipo de funcionário desejado:</p>
+        <input id="rhaiDesc" placeholder="Ex: programador front-end, 18 anos, escola X">
+        <button class="secondary" onclick="rhaiBuscar()">Gerar Sugestões</button>
+        <div id="rhaiResultados"></div>
+    </div>
 
-        // Event listeners para menu
-        menuToggle.addEventListener('click', toggleMenu);
-        closeMenu.addEventListener('click', toggleMenu);
-        overlay.addEventListener('click', toggleMenu);
+    <div class="card">
+        <h2>Analista de Funcionários</h2>
+        <p>O agente de IA realizará:</p>
+        <ul>
+            <li>Análise de Soft Skills (via questionários)</li>
+            <li>Avaliação de Hard Skills (via relatórios do RH)</li>
+            <li>Desempenho geral da empresa (últimos 6 meses)</li>
+        </ul>
+        <button class="secondary" onclick="analiseFuncionarios()">Gerar Relatório</button>
+        <div id="relatorioAnalise"></div>
+    </div>
 
-        // Função para navegar entre páginas
-        function navigateTo(pageId) {
-            pages.forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById(pageId).classList.add('active');
-            toggleMenu(); // Fecha o menu após navegação
-        }
+    <div class="card">
+        <h2>Analista de Dados e Calculadora Inteligente</h2>
+        <input id="calcInput" placeholder="Digite um cálculo ou dado">
+        <button class="secondary" onclick="calcular()">Calcular / Analisar</button>
+        <div id="calcResultado"></div>
+    </div>
+</div>
 
-        // Event listeners para navegação
-        sidebarMenu.addEventListener('click', (e) => {
-            if (e.target.tagName === 'A') {
-                e.preventDefault();
-                const pageId = e.target.getAttribute('data-page');
-                navigateTo(pageId);
-            }
-        });
+<!-- =========================================================
+                    JAVASCRIPT
+========================================================= -->
+<script>
 
-        // Event listeners para botões principais
-        btnAluno.addEventListener('click', () => {
-            navigateTo('aluno-inicio');
-            empresaMenu.style.display = 'none';
-            alunoMenu.style.display = 'block';
-        });
+function toggleMenu(){
+    document.getElementById("sidebar").classList.toggle("open");
+}
 
-        btnEmpresa.addEventListener('click', () => {
-            navigateTo('empresa-inicio');
-            alunoMenu.style.display = 'none';
-            empresaMenu.style.display = 'block';
-        });
+function openScreen(screen){
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.getElementById(screen).classList.add("active");
+}
 
-        // Função para carregar candidatos
-        function loadCandidates() {
-            candidatesGrid.innerHTML = '';
-            candidatos.forEach(candidato => {
-                const candidateCard = document.createElement('div');
-                candidateCard.className = 'candidate-card';
-                candidateCard.innerHTML = `
-                    <img src="${candidato.foto}" alt="${candidato.nome}">
-                    <h4>${candidato.nome}</h4>
-                    <p>${candidato.idade} anos</p>
-                    <p>${candidato.area} - ${candidato.especializacao}</p>
-                    <p>${candidato.escola}</p>
-                    <p>${candidato.cidade}</p>
-                    <button class="btn" onclick="viewCandidate(${candidato.id})">Ver Perfil</button>
-                    <button class="btn btn-outline" onclick="contactCandidate(${candidato.id})">Entrar em Contato</button>
-                `;
-                candidatesGrid.appendChild(candidateCard);
-            });
-        }
+/* ----------------- BUSCA E CONTRATAÇÃO ----------------- */
+function buscarFuncionarios(){
+    let area = document.getElementById("area").value || "Qualquer";
+    let cidade = document.getElementById("cidade").value || "Não especificada";
 
-        // Funções para ações com candidatos
-        window.viewCandidate = function(id) {
-            const candidato = candidatos.find(c => c.id === id);
-            alert(`Visualizando perfil de ${candidato.nome}`);
-            // Aqui seria implementada a navegação para a página de perfil detalhado
-        };
+    document.getElementById("resultados").innerHTML = `
+        <div class='result-card'>
+            <h3>João Silva</h3>
+            <p>Área: ${area}</p>
+            <p>Cidade: ${cidade}</p>
+            <button class='secondary'>Ver Perfil</button>
+            <button class='secondary'>Contratar</button>
+        </div>
+        <div class='result-card'>
+            <h3>Maria Santos</h3>
+            <p>Área: ${area}</p>
+            <p>Cidade: ${cidade}</p>
+            <button class='secondary'>Ver Perfil</button>
+            <button class='secondary'>Contratar</button>
+        </div>
+    `;
+}
 
-        window.contactCandidate = function(id) {
-            const candidato = candidatos.find(c => c.id === id);
-            alert(`Entrando em contato com ${candidato.nome}`);
-            // Aqui seria implementada a funcionalidade de contato
-        };
+/* ----------------- EJ RHAI - CONTRATAÇÃO IA ----------------- */
+function rhaiBuscar(){
+    let req = document.getElementById("rhaiDesc").value;
+    document.getElementById("rhaiResultados").innerHTML = `
+        <div class='result-card'>
+            <h3>IA encontrou 5 candidatos ideais</h3>
+            <p>Requisito informado: <b>${req}</b></p>
+            <button class='secondary'>Contratar melhor candidato</button>
+        </div>
+    `;
+}
 
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', () => {
-            loadCandidates();
-        });
-    </script>
+/* ----------------- ANALISTA DE FUNCIONÁRIOS ----------------- */
+function analiseFuncionarios(){
+    document.getElementById("relatorioAnalise").innerHTML = `
+        <div class='result-card'>
+            <h3>Relatório Semestral</h3>
+            <p>Soft Skills: ★★★★☆</p>
+            <p>Hard Skills: ★★★☆☆</p>
+            <p>Desenvolvimento geral: Crescimento de 12% no semestre.</p>
+        </div>
+    `;
+}
+
+/* ----------------- ANALISTA DE DADOS & CALCULADORA ----------------- */
+function calcular(){
+    let entrada = document.getElementById("calcInput").value;
+    try {
+        let resultado = eval(entrada);
+        document.getElementById("calcResultado").innerHTML = `
+            <div class='result-card'>Resultado: <b>${resultado}</b></div>
+        `;
+    } catch {
+        document.getElementById("calcResultado").innerHTML = `
+            <div class='result-card'>Entrada inválida.</div>
+        `;
+    }
+}
+</script>
+
 </body>
 </html>
