@@ -140,6 +140,62 @@ button.secondary {
 button.secondary:hover {
     background:#0f523d;
 }
+
+/* ---------------------------------------------------------
+        CALCULADORA AVANÇADA (NOVO BLOCO COMPLETO)
+--------------------------------------------------------- */
+#calcContainer {
+    margin-top:20px;
+    background:#111;
+    padding:20px;
+    border-radius:12px;
+}
+
+#calcDisplay {
+    width:100%;
+    padding:20px;
+    font-size:28px;
+    background:#000;
+    border:2px solid var(--verde);
+    color:#0f0;
+    border-radius:8px;
+    text-align:right;
+}
+
+#calcButtons {
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:10px;
+    margin-top:20px;
+}
+
+#calcButtons button {
+    padding:20px;
+    font-size:20px;
+    border:none;
+    border-radius:8px;
+    background:#222;
+    color:white;
+    cursor:pointer;
+    transition:0.2s;
+}
+#calcButtons button:hover {
+    background:var(--verde);
+}
+
+#calcButtons .equal {
+    background:#0b3d2e;
+}
+
+#calcHistorico {
+    margin-top:20px;
+    background:#222;
+    padding:15px;
+    height:150px;
+    overflow-y:auto;
+    border-radius:8px;
+    font-size:16px;
+}
 </style>
 
 </head>
@@ -194,7 +250,7 @@ button.secondary:hover {
 </div>
 
 <!-- -----------------------------------------------------------
-                BUSCA E CONTRATAÇÃO (funcional)
+                BUSCA E CONTRATAÇÃO
 ----------------------------------------------------------- -->
 <div id="buscaContratacao" class="screen">
     <h1>Busca e Contratação</h1>
@@ -215,36 +271,65 @@ button.secondary:hover {
 </div>
 
 <!-- -----------------------------------------------------------
-                EJ RHAI - IA SEMIAUTOMÁTICA
+                    EJ RHAI
 ----------------------------------------------------------- -->
 <div id="ejrhai" class="screen">
     <h1>EJ RHAI — Inteligência Artificial Empresarial</h1>
 
     <div class="card">
         <h2>RH de Contratação Semi-Automático</h2>
-        <p>Descreva o tipo de funcionário desejado:</p>
-        <input id="rhaiDesc" placeholder="Ex: programador front-end, 18 anos, escola X">
+        <input id="rhaiDesc" placeholder="Descreva o funcionário desejado">
         <button class="secondary" onclick="rhaiBuscar()">Gerar Sugestões</button>
         <div id="rhaiResultados"></div>
     </div>
 
+    <!-- ---------------- CALCULADORA NOVA COMPLETA ---------------- -->
     <div class="card">
-        <h2>Analista de Funcionários</h2>
-        <p>O agente de IA realizará:</p>
-        <ul>
-            <li>Análise de Soft Skills (via questionários)</li>
-            <li>Avaliação de Hard Skills (via relatórios do RH)</li>
-            <li>Desempenho geral da empresa (últimos 6 meses)</li>
-        </ul>
-        <button class="secondary" onclick="analiseFuncionarios()">Gerar Relatório</button>
-        <div id="relatorioAnalise"></div>
-    </div>
+        <h2>Analista de Dados e Calculadora Inteligente Avançada</h2>
 
-    <div class="card">
-        <h2>Analista de Dados e Calculadora Inteligente</h2>
-        <input id="calcInput" placeholder="Digite um cálculo ou dado">
-        <button class="secondary" onclick="calcular()">Calcular / Analisar</button>
-        <div id="calcResultado"></div>
+        <div id="calcContainer">
+            <input id="calcDisplay" readonly placeholder="0">
+
+            <div id="calcButtons">
+                <button onclick="calcClear()">C</button>
+                <button onclick="calcDel()">DEL</button>
+                <button onclick="calcPress('(')">(</button>
+                <button onclick="calcPress(')')">)</button>
+
+                <button onclick="calcPress('7')">7</button>
+                <button onclick="calcPress('8')">8</button>
+                <button onclick="calcPress('9')">9</button>
+                <button onclick="calcPress('/')">÷</button>
+
+                <button onclick="calcPress('4')">4</button>
+                <button onclick="calcPress('5')">5</button>
+                <button onclick="calcPress('6')">6</button>
+                <button onclick="calcPress('*')">×</button>
+
+                <button onclick="calcPress('1')">1</button>
+                <button onclick="calcPress('2')">2</button>
+                <button onclick="calcPress('3')">3</button>
+                <button onclick="calcPress('-')">−</button>
+
+                <button onclick="calcPress('0')">0</button>
+                <button onclick="calcPress('.')">.</button>
+                <button onclick="calcPress('+')">+</button>
+                <button onclick="calcEqual()" class="equal">=</button>
+
+                <button onclick="calcFunc('sqrt')">√</button>
+                <button onclick="calcFunc('pow2')">x²</button>
+                <button onclick="calcFunc('pow3')">x³</button>
+                <button onclick="calcFunc('percent')">%</button>
+
+                <button onclick="calcFunc('sin')">sin</button>
+                <button onclick="calcFunc('cos')">cos</button>
+                <button onclick="calcFunc('tan')">tan</button>
+                <button onclick="calcFunc('log')">log</button>
+            </div>
+
+            <h3>Histórico</h3>
+            <div id="calcHistorico"></div>
+        </div>
     </div>
 </div>
 
@@ -297,32 +382,74 @@ function rhaiBuscar(){
     `;
 }
 
-/* ----------------- ANALISTA DE FUNCIONÁRIOS ----------------- */
-function analiseFuncionarios(){
-    document.getElementById("relatorioAnalise").innerHTML = `
-        <div class='result-card'>
-            <h3>Relatório Semestral</h3>
-            <p>Soft Skills: ★★★★☆</p>
-            <p>Hard Skills: ★★★☆☆</p>
-            <p>Desenvolvimento geral: Crescimento de 12% no semestre.</p>
-        </div>
-    `;
+/* -----------------------------------------------------
+                CALCULADORA AVANÇADA
+------------------------------------------------------ */
+
+let calcValor = "";
+let historico = [];
+
+function atualizarDisplay() {
+    document.getElementById("calcDisplay").value = calcValor || "0";
 }
 
-/* ----------------- ANALISTA DE DADOS & CALCULADORA ----------------- */
-function calcular(){
-    let entrada = document.getElementById("calcInput").value;
+function calcPress(v) {
+    calcValor += v;
+    atualizarDisplay();
+}
+
+function calcClear() {
+    calcValor = "";
+    atualizarDisplay();
+}
+
+function calcDel() {
+    calcValor = calcValor.slice(0, -1);
+    atualizarDisplay();
+}
+
+function calcEqual() {
     try {
-        let resultado = eval(entrada);
-        document.getElementById("calcResultado").innerHTML = `
-            <div class='result-card'>Resultado: <b>${resultado}</b></div>
-        `;
+        let resultado = eval(calcValor);
+        historico.push(`${calcValor} = ${resultado}`);
+        mostrarHistorico();
+        calcValor = resultado.toString();
+        atualizarDisplay();
     } catch {
-        document.getElementById("calcResultado").innerHTML = `
-            <div class='result-card'>Entrada inválida.</div>
-        `;
+        calcValor = "Erro";
+        atualizarDisplay();
     }
 }
+
+function mostrarHistorico() {
+    let area = document.getElementById("calcHistorico");
+    area.innerHTML = historico.slice(-10).map(h => `<p>${h}</p>`).join("");
+}
+
+function calcFunc(type) {
+    let num = parseFloat(calcValor);
+    if (isNaN(num)) return;
+
+    let result;
+
+    switch(type) {
+        case "sqrt": result = Math.sqrt(num); break;
+        case "pow2": result = Math.pow(num, 2); break;
+        case "pow3": result = Math.pow(num, 3); break;
+        case "percent": result = num / 100; break;
+        case "sin": result = Math.sin(num * Math.PI / 180); break;
+        case "cos": result = Math.cos(num * Math.PI / 180); break;
+        case "tan": result = Math.tan(num * Math.PI / 180); break;
+        case "log": result = Math.log10(num); break;
+    }
+
+    historico.push(`${type}(${num}) = ${result}`);
+    mostrarHistorico();
+
+    calcValor = result.toString();
+    atualizarDisplay();
+}
+
 </script>
 
 </body>
